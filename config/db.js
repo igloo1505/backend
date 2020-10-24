@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
-const config = require("config");
-const db = config.get("mongoURI");
+require("dotenv").config();
+const colors = require("colors");
 
 const connectDB = () => {
   mongoose
-    .connect(db, {
+    .connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useCreateIndex: false,
       autoIndex: false,
       useFindAndModify: false,
       useUnifiedTopology: true,
     })
-    .then(() => console.log("Medication Database Connected"));
+    .then(() => console.log("Medication Database Connected".bgRed.black));
 };
 module.exports = connectDB;
