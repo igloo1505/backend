@@ -42,14 +42,16 @@ router.post(
       if (!checkPassword) {
         return res.status(500).json({ msg: "invalid password" });
       }
-      ``;
 
       const payload = {
         user: {
           id: user.id,
         },
       };
-      console.log(payload);
+      console.log("payload", payload);
+      console.log("user above delete", user.password)
+      user.password = undefined
+      console.log("user down here...", user.password)
       jwt.sign(
         payload,
         process.env.JWT_SECRET_KEY,

@@ -4,6 +4,15 @@ const millisecondsToWeek = 604800000;
 
 const intervalTypes = ["perDay", "perWeek", "hours", "notMoreThan"];
 
+const validateIntervalType = (intervalType) => {
+  if(intervalTypes.indexOf(intervalType) === -1){
+    return false
+  }
+  else {
+    return true
+  }
+}
+
 const getByHours = (hrs, currentTimeStamp) => {
   let hrsInMilliseconds = hrs * millisecondsToHours;
   let newAlert;
@@ -38,7 +47,7 @@ const getByTimesDaily = (freq, currentTimeStamp) => {
 
 const setIntervalByType = (type, freq) => {
   let intervalObject = {};
-  intervalObject.type = type;
+  intervalObject.intervalType = type;
   intervalObject.frequency = freq;
   if (intervalTypes.indexOf(type) === -1) {
     console.error("Ah Shit... there was a problem setting an interval");
@@ -52,6 +61,7 @@ const setIntervalByType = (type, freq) => {
   if (type === "hours") {
     intervalObject.intervalMilliseconds = millisecondsToHours * freq;
   }
+  intervalObject.nextAlert = Date.now() + intervalObject.intervalMilliseconds
   return intervalObject;
 };
 
@@ -60,6 +70,7 @@ module.exports = {
   getByTimesWeekly,
   getByTimesDaily,
   setIntervalByType,
+  validateIntervalType,
   intervalTypes,
 };
 

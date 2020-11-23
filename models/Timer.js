@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const User = require("./User");
 
 const TimerSchema = mongoose.Schema({
-  medicationName: {
+  timerName: {
     type: String,
     required: true,
   },
@@ -15,30 +15,42 @@ const TimerSchema = mongoose.Schema({
     type: String,
     required: false,
   },
-  lastTaken: {
-    type: Date,
-    required: false,
-  },
   interval: {
-    type: mongoose.Schema.Types.Mixed,
-    required: true,
-  },
-  nextAlert: {
-    type: Date,
-    required: false,
+    // type: mongoose.Schema.Types.Mixed,
+    // required: true,
+    intervalType: {
+      type: String, 
+      required: true
+    },
+    frequency: {
+      type: Number,
+      required: true
+    },
+    intervalMilliseconds: {
+      type: Number,
+      required: true
+    },
+    lastTaken: {
+      type: Number,
+      required: false,
+    },
+    nextAlert: {
+      type: Number,
+      required: true,
+    },
   },
 });
 TimerSchema.methods.setLastTaken = function () {
-  this.lastTaken = Date.now();
+  this.interval.lastTaken = Date.now();
 };
 TimerSchema.methods.setNextAlert = function () {
-  this.nextAlert = Date.now() + this.interval.intervalMilliseconds;
+  this.interval.nextAlert = Date.now() + this.interval.intervalMilliseconds;
 };
 TimerSchema.methods.setScannable = function (scanned) {
   this.Scannable = scanned;
 };
 TimerSchema.methods.getTimeUntil = function () {
-  let timeUntil = this.nextAlert - Date.now();
+  let timeUntil = this.interval.nextAlert - Date.now();
   return timeUntil;
 };
 

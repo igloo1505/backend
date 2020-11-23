@@ -10,7 +10,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 app.use("/users", require("./routes/userRoute"));
 app.use("/authenticate", require("./routes/authRoute"));
-// app.use("/recipes", require("./routes/medicationRoute"));
+app.use("/timers", require("./routes/medicationRoute"));
 //
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));

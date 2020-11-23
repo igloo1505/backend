@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const {validateIntervalType, setIntervalByType} = require("../utils/timerFunctions")
 const User = require("../models/User");
 const Timer = require("../models/Timer");
 const auth = require("./auth");
 
 // !! Post new medication timer for authenticated user
 router.post("/", auth, async (req, res) => {
-  const { userID, medicationName, intervalType, intervalFrequency } = req.body;
+  console.log("Request body: ", req.body)
+  const { userID, timerName, intervalType, intervalFrequency } = req.body;
+  
   try {
     const user = User.findById(userID);
     if (!user) {
@@ -14,16 +17,26 @@ router.post("/", auth, async (req, res) => {
         .status(500)
         .json({ msg: "You need to be logged in to post a medication timer" });
     }
+    const isValidInterval = validateIntervalType(intervalType)
+    console.log('isValidInterval: ', isValidInterval);
+    if(!isValidInterval){
+      return res.status(500).json({msg: "Something went wrong validating the interval type."})
+    }
+    let interval = setIntervalByType(intervalType, intervalFrequency)
+    console.log('interval: ', interval);
     const newTimer = new Timer({
-      medicationName,
+      timerName,
       userID,
-      intervalType,
-      intervalFrequency,
+      interval
     });
+    newTimer.setLastTaken()
+    console.log('newTimer: ', newTimer);
     await newTimer.save();
+    return res.status(200).json(newTimer)
   } catch (error) {
     return res.status(500).json({
       msg: "Oh no. There was an error posting a new medication timer",
+      error: error
     });
   }
 });
